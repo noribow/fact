@@ -17,6 +17,7 @@ typedef struct {
 #define NUMBER_NOT_PRIME (1)
 #define NUMBER_COMPOSITE (2)
 #define NUMBER_NOT_COMPOSITE (3)
+#define NUMBER_UNKNOWN (4)
 
 #define MAX_PRIME_SIEVE_SIZE (10 * 1000 * 1000)
 int* prime_table;
@@ -63,6 +64,27 @@ int make_prime_table(void)
     free(prime_sieve_table);
 
     return 0;
+}
+
+int prime_test_trial_div(mpz_t n)
+{
+    int nn, r, p;
+    int i;
+
+    for (i = 0; i < prime_table_size; i++) {
+        p = prime_table[i];
+        r = mpz_cdiv_ui(n, p);
+        if (r == 0) {
+            if (mpz_cmp_ui(n, p) == 0) {
+                return NUMBER_PRIME;
+            }
+            else {
+                return NUMBER_NOT_PRIME;
+            }
+        }
+    }
+
+    return NUMBER_UNKNOWN;
 }
 
 int prime_test(mpz_t n)
