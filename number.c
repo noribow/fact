@@ -46,3 +46,65 @@ int make_prime_table(void)
 
     return 0;
 }
+
+int prime_test_trial_div(mpz_t n)
+{
+    int nn, r, p;
+    int i;
+
+    for (i = 0; i < prime_table_size; i++) {
+        p = prime_table[i];
+        r = mpz_cdiv_ui(n, p);
+        if (r == 0) {
+            if (mpz_cmp_ui(n, p) == 0) {
+                return NUMBER_PRIME;
+            } else {
+                return NUMBER_NOT_PRIME;
+            }
+        }
+    }
+
+    return NUMBER_UNKNOWN;
+}
+
+FACTOR_ARRAY* alloc_factor_array(void)
+{
+    FACTOR_ARRAY* p;
+    int i;
+
+    p = (FACTOR_ARRAY*)malloc(sizeof(FACTOR_ARRAY));
+    if (p == NULL)
+        return NULL;
+
+    p->fact = (mpz_t*)malloc(sizeof(mpz_t) * FACTOR_ARRAY_ELEMENT_MAX);
+    if (p->fact == NULL) {
+        free(p);
+        return NULL;
+    }
+
+    p->fact_flag = (int*)malloc(sizeof(int) * FACTOR_ARRAY_ELEMENT_MAX);
+    if (p->fact_flag == NULL) {
+        free(p);
+        free(p->fact);
+        return NULL;
+    }
+
+    for (i = 0; i < FACTOR_ARRAY_ELEMENT_MAX; i++)
+        mpz_init(p->fact[i]);
+    mpz_init(p->n);
+
+    return p;
+}
+
+void free_factor_array(FACTOR_ARRAY* p)
+{
+    int i;
+
+    mpz_clear(p->n);
+    for (i = 0; i < FACTOR_ARRAY_ELEMENT_MAX; i++)
+        mpz_clear(p->fact[i]);
+    free(p->fact_flag);
+    free(p->fact);
+
+    free(p);
+}

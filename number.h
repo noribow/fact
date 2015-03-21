@@ -13,6 +13,9 @@ typedef struct {
 
 #define FACTOR_ARRAY_ELEMENT_MAX (100)
 
+#define FACTOR_ARRAY_COMP (0)
+#define FACTOR_ARRAY_UNCOMP (1)
+
 #define NUMBER_PRIME (0)
 #define NUMBER_NOT_PRIME (1)
 #define NUMBER_COMPOSITE (2)
@@ -34,5 +37,6 @@ EXT int prime_table_size;
 
 /*number.c*/
 int make_prime_table(void);
+int prime_test_trial_div(mpz_t n);
 
 #endif /* _NUMBER_H_ */
