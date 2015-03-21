@@ -3,68 +3,7 @@
 #include <strings.h>
 #include <gmp.h>
 
-typedef struct {
-    int flag;
-    int fact_count;
-    mpz_t n;
-    mpz_t* fact;
-    int* fact_flag;
-} FACTOR_ARRAY;
-
-#define FACTOR_ARRAY_ELEMENT_MAX (100)
-
-#define NUMBER_PRIME (0)
-#define NUMBER_NOT_PRIME (1)
-#define NUMBER_COMPOSITE (2)
-#define NUMBER_NOT_COMPOSITE (3)
-#define NUMBER_UNKNOWN (4)
-
-#define MAX_PRIME_SIEVE_SIZE (10 * 1000 * 1000)
-int* prime_table;
-int prime_table_size;
-char* prime_sieve_table;
-
-int make_prime_table(void)
-{
-    int prime_count = 1;
-    int i, j, p;
-
-    prime_sieve_table = (char*)malloc(MAX_PRIME_SIEVE_SIZE);
-    if (prime_sieve_table == NULL)
-        return 0;
-
-    for (i = 0; i < MAX_PRIME_SIEVE_SIZE; i++)
-        prime_sieve_table[i] = 1;
-
-    for (i = 0; i < MAX_PRIME_SIEVE_SIZE; i++) {
-        if (prime_sieve_table[i] == 0)
-            continue;
-
-        prime_count++;
-        p = 2 * i + 3;
-        for (j = i + p; j < MAX_PRIME_SIEVE_SIZE; j += p)
-            prime_sieve_table[j] = 0;
-    }
-
-    prime_table = (int*)malloc(sizeof(int) * prime_count);
-    if (prime_table == NULL)
-        return 0;
-
-    prime_table[0] = 2;
-    prime_count = 0;
-    for (i = 0; i < MAX_PRIME_SIEVE_SIZE; i++) {
-        if (prime_sieve_table[i] == 0)
-            continue;
-
-        p = 2 * i + 3;
-        prime_count++;
-        prime_table[prime_count] = p;
-    }
-    prime_table_size = prime_count + 1;
-    free(prime_sieve_table);
-
-    return 0;
-}
+#include "number.h"
 
 int prime_test_trial_div(mpz_t n)
 {
@@ -77,8 +16,7 @@ int prime_test_trial_div(mpz_t n)
         if (r == 0) {
             if (mpz_cmp_ui(n, p) == 0) {
                 return NUMBER_PRIME;
-            }
-            else {
+            } else {
                 return NUMBER_NOT_PRIME;
             }
         }
